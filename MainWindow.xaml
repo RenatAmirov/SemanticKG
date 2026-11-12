@@ -1,0 +1,255 @@
+<Window
+    x:Class="SemanticKG.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SemanticKG">
+    <Grid x:Name="Root" RequestedTheme="Dark" Background="#131520" MinWidth="0">
+        <Grid.Resources>
+            <SolidColorBrush x:Key="PanelBrush" Color="#171A27" />
+            <SolidColorBrush x:Key="DividerBrush" Color="#292D3F" />
+            <SolidColorBrush x:Key="TextBrush" Color="#F0EFF9" />
+            <SolidColorBrush x:Key="MutedBrush" Color="#A7ACC5" />
+            <SolidColorBrush x:Key="AccentBrush" Color="#B5A4FF" />
+            <Style x:Key="ToolButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="#222638" />
+                <Setter Property="BorderBrush" Value="#34394F" />
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                <Setter Property="CornerRadius" Value="7" />
+                <Setter Property="Padding" Value="12,7" />
+                <Setter Property="MinHeight" Value="34" />
+            </Style>
+            <Style x:Key="QuietButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolButtonStyle}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+            </Style>
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolButtonStyle}">
+                <Setter Property="Background" Value="#6347CC" />
+                <Setter Property="BorderBrush" Value="#8A72E8" />
+                <Setter Property="Foreground" Value="White" />
+            </Style>
+            <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            <Style x:Key="MutedTextStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+            <Style x:Key="FieldStyle" TargetType="TextBox">
+                <Setter Property="Background" Value="#111420" />
+                <Setter Property="BorderBrush" Value="#363B52" />
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                <Setter Property="CornerRadius" Value="7" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="MinHeight" Value="35" />
+            </Style>
+        </Grid.Resources>
+        <Grid.KeyboardAccelerators>
+            <KeyboardAccelerator Key="N" Modifiers="Control" Invoked="AddNodeAccelerator" />
+            <KeyboardAccelerator Key="S" Modifiers="Control" Invoked="SaveAccelerator" />
+            <KeyboardAccelerator Key="O" Modifiers="Control" Invoked="OpenAccelerator" />
+            <KeyboardAccelerator Key="Escape" Invoked="EscapeAccelerator" />
+        </Grid.KeyboardAccelerators>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+
+        <Border x:Name="TitleBar" Background="#11131D" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="16,0,0,0" Spacing="10" VerticalAlignment="Center">
+                <Border Width="26" Height="26" Background="#785ADF" CornerRadius="7">
+                    <Canvas Width="18" Height="18" IsHitTestVisible="False">
+                        <Line X1="4" Y1="10" X2="13" Y2="4" Stroke="#F7F3FF" StrokeThickness="1.5" />
+                        <Line X1="4" Y1="10" X2="13" Y2="14" Stroke="#F7F3FF" StrokeThickness="1.5" />
+                        <Ellipse Width="5" Height="5" Fill="White" Canvas.Left="1.5" Canvas.Top="7.5" />
+                        <Ellipse Width="5" Height="5" Fill="White" Canvas.Left="10.5" Canvas.Top="1.5" />
+                        <Ellipse Width="5" Height="5" Fill="White" Canvas.Left="10.5" Canvas.Top="11.5" />
+                    </Canvas>
+                </Border>
+                <TextBlock Text="SemanticKG" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="#1A1D2B" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="14,0" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <Button Style="{StaticResource QuietButtonStyle}" Click="NewMapClicked" AutomationProperties.Name="Новая карта">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7C3;" FontSize="14" /><TextBlock Text="Новая" /></StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource QuietButtonStyle}" Click="OpenMapClicked" ToolTipService.ToolTip="Открыть карту (Ctrl+O)" AutomationProperties.Name="Открыть карту">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8E5;" FontSize="14" /><TextBlock Text="Открыть" /></StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource QuietButtonStyle}" Click="SaveMapClicked" ToolTipService.ToolTip="Сохранить карту (Ctrl+S)" AutomationProperties.Name="Сохранить карту">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74E;" FontSize="14" /><TextBlock Text="Сохранить" /></StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button x:Name="ConnectButton" Style="{StaticResource ToolButtonStyle}" Click="ConnectClicked" AutomationProperties.Name="Создать связь">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE71B;" FontSize="14" /><TextBlock Text="Связь" /></StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Click="AddNodeClicked" ToolTipService.ToolTip="Добавить узел (Ctrl+N)" AutomationProperties.Name="Добавить узел">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="14" /><TextBlock Text="Узел" FontWeight="SemiBold" /></StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="NavigationColumn" Width="224" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition x:Name="InspectorColumn" Width="292" />
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="NavigationPane" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,1,0">
+                <Grid Margin="14,17,14,12" RowSpacing="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" MaxHeight="160" />
+                    </Grid.RowDefinitions>
+                    <Grid Margin="3,1">
+                        <TextBlock Text="Узлы" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock x:Name="NodeCount" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}" />
+                    </Grid>
+                    <TextBox x:Name="SearchField" Grid.Row="1" PlaceholderText="Поиск узлов" Style="{StaticResource FieldStyle}" TextChanged="SearchChanged" AutomationProperties.Name="Поиск узлов" />
+                    <ScrollViewer Grid.Row="2" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="NodeList" Spacing="4" />
+                    </ScrollViewer>
+                    <Border Grid.Row="3" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0" Padding="3,12,0,0">
+                        <Grid RowSpacing="9">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                            <TextBlock Text="Фильтр по меткам" Style="{StaticResource SectionTitleStyle}" />
+                            <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
+                                <local:ChipPanel x:Name="TagFilters" />
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1" Background="#141724">
+                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Border Background="#171A28" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1" Padding="20,12">
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <StackPanel Spacing="3" VerticalAlignment="Center">
+                            <TextBlock x:Name="MapTitle" Foreground="{StaticResource TextBrush}" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                            <TextBlock x:Name="MapSummary" Style="{StaticResource MutedTextStyle}" />
+                        </StackPanel>
+                        <ToggleButton x:Name="FocusToggle" Grid.Column="1" Content="Фокус" Click="FocusClicked" CornerRadius="7" Padding="10,6" VerticalAlignment="Center" ToolTipService.ToolTip="Показать выбранный узел и его соседей" />
+                    </Grid>
+                </Border>
+                <Grid Grid.Row="1">
+                    <local:GraphView x:Name="Graph" />
+                    <Border x:Name="LinkPrompt" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="12,14" Padding="12,5,5,5" CornerRadius="8" Background="#31274F" BorderBrush="#7660BD" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock x:Name="LinkPromptText" VerticalAlignment="Center" Foreground="#F3EBFF" />
+                            <Button Content="Отмена" Style="{StaticResource QuietButtonStyle}" Click="CancelConnectClicked" />
+                        </StackPanel>
+                    </Border>
+                    <StackPanel x:Name="EmptyState" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                        <FontIcon Glyph="&#xE71B;" FontSize="28" Foreground="{StaticResource AccentBrush}" />
+                        <TextBlock Text="Карта пока пуста" HorizontalAlignment="Center" Foreground="{StaticResource TextBrush}" FontSize="19" FontWeight="SemiBold" />
+                        <TextBlock Text="Добавьте первый узел, чтобы начать." Style="{StaticResource MutedTextStyle}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="16" CornerRadius="9" Padding="3" Background="#1D2131" BorderBrush="#383D54" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Button Style="{StaticResource QuietButtonStyle}" Click="ZoomOutClicked" Padding="8,5" AutomationProperties.Name="Уменьшить" ToolTipService.ToolTip="Уменьшить">
+                                <FontIcon Glyph="&#xE738;" FontSize="13" />
+                            </Button>
+                            <TextBlock x:Name="ZoomText" Foreground="{StaticResource TextBrush}" Width="40" TextAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                            <Button Style="{StaticResource QuietButtonStyle}" Click="ZoomInClicked" Padding="8,5" AutomationProperties.Name="Увеличить" ToolTipService.ToolTip="Увеличить">
+                                <FontIcon Glyph="&#xE710;" FontSize="13" />
+                            </Button>
+                            <Border Width="1" Height="18" Margin="3,0" VerticalAlignment="Center" Background="{StaticResource DividerBrush}" />
+                            <Button Style="{StaticResource QuietButtonStyle}" Click="FitClicked" Padding="8,5" AutomationProperties.Name="Вместить карту" ToolTipService.ToolTip="Вместить карту">
+                                <FontIcon Glyph="&#xE740;" FontSize="13" />
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <Border x:Name="InspectorPane" Grid.Column="2" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource DividerBrush}" BorderThickness="1,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <Border BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1" Padding="17,17,17,15">
+                        <TextBlock x:Name="InspectorHeading" Text="Свойства узла" Style="{StaticResource SectionTitleStyle}" />
+                    </Border>
+                    <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="16,14,16,12">
+                            <TextBlock x:Name="InspectorEmpty" Text="Выберите узел или связь на карте." Style="{StaticResource MutedTextStyle}" TextWrapping="Wrap" />
+                            <StackPanel x:Name="NodeDetails" Spacing="14" Visibility="Collapsed">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Название" Style="{StaticResource MutedTextStyle}" />
+                                    <TextBox x:Name="NodeTitleField" Style="{StaticResource FieldStyle}" TextChanged="NodeTitleChanged" LostFocus="NodeTitleLostFocus" AutomationProperties.Name="Название узла" />
+                                </StackPanel>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Заметка" Style="{StaticResource MutedTextStyle}" />
+                                    <TextBox x:Name="NotesField" Style="{StaticResource FieldStyle}" PlaceholderText="Добавить заметку" MinHeight="86" MaxHeight="132" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="NotesChanged" AutomationProperties.Name="Заметка узла" />
+                                </StackPanel>
+                                <StackPanel Spacing="7">
+                                    <TextBlock Text="Метки" Style="{StaticResource SectionTitleStyle}" />
+                                    <local:ChipPanel x:Name="NodeTags" />
+                                    <Grid ColumnSpacing="6">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                        <TextBox x:Name="TagField" Style="{StaticResource FieldStyle}" PlaceholderText="Новая метка" KeyDown="TagKeyDown" AutomationProperties.Name="Новая метка" />
+                                        <Button Grid.Column="1" Style="{StaticResource ToolButtonStyle}" Click="AddTagClicked" VerticalAlignment="Stretch" AutomationProperties.Name="Добавить метку" ToolTipService.ToolTip="Добавить метку">
+                                            <FontIcon Glyph="&#xE710;" FontSize="13" />
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                                <StackPanel Spacing="7">
+                                    <TextBlock Text="Цвет узла" Style="{StaticResource MutedTextStyle}" />
+                                    <StackPanel x:Name="ColorOptions" Orientation="Horizontal" Spacing="5" />
+                                </StackPanel>
+                                <Border BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0" Padding="0,11,0,0">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock x:Name="ConnectionsTitle" Style="{StaticResource SectionTitleStyle}" />
+                                        <StackPanel x:Name="ConnectionList" Spacing="3" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel x:Name="LinkDetails" Spacing="12" Visibility="Collapsed">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Узлы связи" Style="{StaticResource MutedTextStyle}" />
+                                    <StackPanel x:Name="LinkEndpoints" Spacing="4" />
+                                </StackPanel>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Подпись связи" Style="{StaticResource SectionTitleStyle}" />
+                                    <TextBox x:Name="LinkLabelField" Style="{StaticResource FieldStyle}" PlaceholderText="Добавить подпись" TextChanged="LinkLabelChanged" LostFocus="LinkLabelLostFocus" AutomationProperties.Name="Подпись связи" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                    <Border x:Name="DeleteArea" Grid.Row="2" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0" Padding="12,6" Visibility="Collapsed">
+                        <Button Style="{StaticResource QuietButtonStyle}" Click="DeleteClicked" Foreground="#FF9DAE" AutomationProperties.Name="Удалить выбранный элемент">
+                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74D;" FontSize="14" /><TextBlock x:Name="DeleteText" /></StackPanel>
+                        </Button>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" Background="#11131D" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0" Padding="15,0">
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                    <Ellipse x:Name="StatusDot" Width="6" Height="6" Fill="{StaticResource AccentBrush}" />
+                    <TextBlock x:Name="StatusText" Style="{StaticResource MutedTextStyle}" />
+                </StackPanel>
+                <TextBlock x:Name="NavigationHint" Grid.Column="1" Text="Колесо · масштаб     Перетаскивание фона · обзор" Style="{StaticResource MutedTextStyle}" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
